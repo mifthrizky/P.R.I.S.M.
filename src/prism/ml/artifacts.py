@@ -31,10 +31,16 @@ def runtime_versions() -> dict[str, str]:
         "numpy": version("numpy"),
         "pandas": version("pandas"),
         "scikit-learn": version("scikit-learn"),
+        "xgboost": version("xgboost"),
     }
 
 
-def save_bundle(pipeline: Any, metadata: dict[str, Any], artifact_dir: str | Path) -> Path:
+def save_bundle(
+    pipeline: Any,
+    metadata: dict[str, Any],
+    artifact_dir: str | Path,
+    failure_type_pipeline: Any | None = None,
+) -> Path:
     """Atomically write a model bundle and its human-readable metadata."""
     output_dir = Path(artifact_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -46,6 +52,7 @@ def save_bundle(pipeline: Any, metadata: dict[str, Any], artifact_dir: str | Pat
     bundle = {
         "artifact_format_version": ARTIFACT_FORMAT_VERSION,
         "pipeline": pipeline,
+        "failure_type_pipeline": failure_type_pipeline,
         "metadata": metadata,
     }
     joblib.dump(bundle, bundle_temp, compress=3)

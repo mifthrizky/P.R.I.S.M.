@@ -22,13 +22,17 @@ def test_artifact_matches_dataset_and_feature_contract(bundle):
 
     assert metadata["dataset"]["sha256"] == sha256_file(DATASET_PATH)
     assert metadata["dataset"]["rows"] == 10_000
-    assert metadata["decision_threshold"] == 0.7
+    assert 0 < metadata["decision_threshold"] < 1
+    assert metadata["model_version"] == "2.0.0"
+    assert bundle["failure_type_pipeline"] is not None
+    assert set(metadata["failure_type_columns"]) == {"TWF", "HDF", "PWF", "OSF"}
 
 
 def test_saved_model_meets_roc_auc_gate():
     metrics = evaluate_saved_model(CONFIG_PATH, ARTIFACT_PATH)
 
     assert metrics["roc_auc"] >= 0.88
+    assert metrics["classification_report"]["1"]["recall"] >= 0.90
 
 
 def test_prd_demo_payloads_take_expected_branches(bundle):
@@ -39,5 +43,9 @@ def test_prd_demo_payloads_take_expected_branches(bundle):
     assert normal["failure_probability"] < normal["threshold"]
     assert anomaly["status"] == "CRITICAL_WARNING"
     assert anomaly["failure_probability"] >= anomaly["threshold"]
+    assert anomaly["primary_failure"] == "OSF"
+    assert "OSF" in {
+        prediction["failure_type"] for prediction in anomaly["failure_predictions"]
+    }
     assert normal["machine_type"] == "M"
     assert normal["machine_type_assumed"] is True

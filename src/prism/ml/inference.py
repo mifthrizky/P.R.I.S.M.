@@ -42,11 +42,39 @@ def predict_payload(bundle: dict[str, Any], payload: dict[str, Any]) -> dict[str
     features = payload_to_frame(payload["metrics"], machine_type)
     probability = float(bundle["pipeline"].predict_proba(features)[0, 1])
     threshold = float(bundle["metadata"]["decision_threshold"])
+    is_critical = probability >= threshold
+    failure_predictions: list[dict[str, Any]] = []
+    primary_failure: str | None = None
+    if is_critical and bundle.get("failure_type_pipeline") is not None:
+        failure_types = bundle["metadata"]["failure_type_columns"]
+        type_thresholds = bundle["metadata"]["failure_type_thresholds"]
+        type_probabilities = bundle["failure_type_pipeline"].predict_proba(features)[0]
+        failure_predictions = sorted(
+            [
+                {
+                    "failure_type": failure_type,
+                    "probability": float(type_probability),
+                    "threshold": float(type_thresholds[failure_type]),
+                }
+                for failure_type, type_probability in zip(
+                    failure_types, type_probabilities, strict=True
+                )
+                if type_probability >= type_thresholds[failure_type]
+            ],
+            key=lambda item: item["probability"],
+            reverse=True,
+        )
+        if failure_predictions:
+            primary_failure = failure_predictions[0]["failure_type"]
+        else:
+            primary_failure = "UNKNOWN_FAILURE"
     return {
         "sensor_id": payload.get("sensor_id"),
         "timestamp": payload.get("timestamp"),
-        "status": "CRITICAL_WARNING" if probability >= threshold else "HEALTHY",
+        "status": "CRITICAL_WARNING" if is_critical else "HEALTHY",
         "failure_probability": probability,
+        "primary_failure": primary_failure,
+        "failure_predictions": failure_predictions,
         "threshold": threshold,
         "machine_type": machine_type,
         "machine_type_assumed": not machine_type_was_supplied,

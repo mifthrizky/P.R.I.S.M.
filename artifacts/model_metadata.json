@@ -5,7 +5,25 @@
     "rows": 10000,
     "sha256": "f602454c133d7b85f0b90f7ff4c8d2b9e450cd5583536ee4da93d7eda43f3292"
   },
-  "decision_threshold": 0.7,
+  "decision_threshold": 0.01326099497403016,
+  "failure_classifier_parameters": {
+    "class_weight": "balanced",
+    "max_depth": null,
+    "n_estimators": 400,
+    "n_jobs": -1
+  },
+  "failure_type_columns": [
+    "TWF",
+    "HDF",
+    "PWF",
+    "OSF"
+  ],
+  "failure_type_thresholds": {
+    "HDF": 0.7325,
+    "OSF": 0.735,
+    "PWF": 0.9,
+    "TWF": 0.01
+  },
   "feature_columns": [
     "Type",
     "Air temperature [K]",
@@ -17,73 +35,143 @@
     "power"
   ],
   "metrics": {
-    "cross_validation": {
-      "folds": 5,
-      "roc_auc_mean": 0.9731416815564582,
-      "roc_auc_scores": [
-        0.9755001505663611,
-        0.9762475642430886,
-        0.9790867433930095,
-        0.9681220314212642,
-        0.9667519181585678
-      ],
-      "roc_auc_std": 0.0048286355699094724
+    "candidate_comparison": {
+      "random_forest": {
+        "average_precision_mean": 0.8663218850194323,
+        "average_precision_scores": [
+          0.9148887613487449,
+          0.8191258450301128,
+          0.8571891887717199,
+          0.8717056212410355,
+          0.868700008705548
+        ],
+        "roc_auc_mean": 0.9755602514889621,
+        "roc_auc_scores": [
+          0.9902616070145178,
+          0.9818108859182598,
+          0.9601360739782474,
+          0.9897645057735615,
+          0.9558281847602237
+        ]
+      },
+      "xgboost": {
+        "average_precision_mean": 0.8305699607993035,
+        "average_precision_scores": [
+          0.8928297333077638,
+          0.7862719636380109,
+          0.8371958061433691,
+          0.7841056557024625,
+          0.8524466452049116
+        ],
+        "roc_auc_mean": 0.9769948300498295,
+        "roc_auc_scores": [
+          0.9896746681998947,
+          0.9822960088160605,
+          0.9577883187197546,
+          0.9861889703416223,
+          0.9690261841718152
+        ]
+      }
+    },
+    "failure_types": {
+      "HDF": {
+        "average_precision": 0.9775569572572551,
+        "f1": 0.8518518518518519,
+        "precision": 0.92,
+        "recall": 0.7931034482758621,
+        "roc_auc": 0.9996938364911913,
+        "threshold": 0.7325
+      },
+      "OSF": {
+        "average_precision": 0.8688151431901432,
+        "f1": 0.7857142857142857,
+        "precision": 0.9166666666666666,
+        "recall": 0.6875,
+        "roc_auc": 0.9981256300403227,
+        "threshold": 0.735
+      },
+      "PWF": {
+        "average_precision": 0.9999999999999998,
+        "f1": 0.8695652173913043,
+        "precision": 1.0,
+        "recall": 0.7692307692307693,
+        "roc_auc": 1.0,
+        "threshold": 0.9
+      },
+      "TWF": {
+        "average_precision": 0.04182119280610256,
+        "f1": 0.0945945945945946,
+        "precision": 0.050724637681159424,
+        "recall": 0.7,
+        "roc_auc": 0.8029145728643216,
+        "threshold": 0.01
+      }
     },
     "holdout": {
       "classification_report": {
         "0": {
-          "f1-score": 0.9927946474523932,
-          "precision": 0.9872057318321392,
-          "recall": 0.9984472049689441,
+          "f1-score": 0.9597423510466989,
+          "precision": 0.9966555183946488,
+          "recall": 0.9254658385093167,
           "support": 1932.0
         },
         "1": {
-          "f1-score": 0.7543859649122807,
-          "precision": 0.9347826086956522,
-          "recall": 0.6323529411764706,
+          "f1-score": 0.45255474452554745,
+          "precision": 0.30097087378640774,
+          "recall": 0.9117647058823529,
           "support": 68.0
         },
-        "accuracy": 0.986,
+        "accuracy": 0.925,
         "macro avg": {
-          "f1-score": 0.8735903061823369,
-          "precision": 0.9609941702638958,
-          "recall": 0.8154000730727073,
+          "f1-score": 0.7061485477861231,
+          "precision": 0.6488131960905283,
+          "recall": 0.9186152721958348,
           "support": 2000.0
         },
         "weighted avg": {
-          "f1-score": 0.9846887522460294,
-          "precision": 0.9854233456454987,
-          "recall": 0.986,
+          "f1-score": 0.9424979724249798,
+          "precision": 0.9730022404779686,
+          "recall": 0.925,
           "support": 2000.0
         }
       },
       "confusion_matrix": [
         [
-          1929,
-          3
+          1788,
+          144
         ],
         [
-          25,
-          43
+          6,
+          62
         ]
       ],
       "probability_summary": {
-        "maximum": 0.9933333333333333,
-        "mean": 0.044921666666666665,
-        "minimum": 0.0
+        "maximum": 0.9914152526081718,
+        "mean": 0.034399557992195386,
+        "minimum": 0.0037942796742725187
       },
-      "roc_auc": 0.9765139751552796,
-      "threshold": 0.7
+      "roc_auc": 0.9603694738765072,
+      "threshold": 0.01326099497403016
     }
   },
-  "model_parameters": {
-    "class_weight": "balanced",
-    "max_depth": null,
-    "n_estimators": 300,
-    "n_jobs": -1
+  "model_candidates": {
+    "random_forest": {
+      "class_weight": "balanced",
+      "max_depth": null,
+      "n_estimators": 300,
+      "n_jobs": -1
+    },
+    "xgboost": {
+      "colsample_bytree": 0.9,
+      "learning_rate": 0.05,
+      "max_depth": 4,
+      "n_estimators": 300,
+      "n_jobs": -1,
+      "subsample": 0.9
+    }
   },
-  "model_type": "RandomForestClassifier",
-  "model_version": "1.0.0",
+  "model_type": "CalibratedClassifierCV",
+  "model_version": "2.0.0",
   "project_version": "0.1.0",
   "random_seed": 42,
   "runtime_versions": {
@@ -91,13 +179,17 @@
     "numpy": "2.5.2",
     "pandas": "3.0.5",
     "python": "3.14.3",
-    "scikit-learn": "1.9.0"
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1"
   },
+  "selected_binary_model": "random_forest",
   "split": {
     "test_rows": 2000,
     "test_size": 0.2,
-    "train_rows": 8000
+    "train_rows": 6000,
+    "validation_rows": 2000,
+    "validation_size": 0.2
   },
   "target_column": "Machine failure",
-  "trained_at_utc": "2026-10-19T14:26:00.863348+00:00"
+  "trained_at_utc": "2026-10-19T14:35:33.926519+00:00"
 }

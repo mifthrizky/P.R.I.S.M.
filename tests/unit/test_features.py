@@ -5,6 +5,7 @@ from prism.ml.features import (
     FEATURE_COLUMNS,
     engineer_features,
     payload_to_frame,
+    prepare_failure_type_targets,
     prepare_training_data,
 )
 
@@ -60,3 +61,12 @@ def test_payload_to_frame_defaults_to_expected_columns():
 def test_payload_to_frame_rejects_missing_metrics():
     with pytest.raises(ValueError, match="missing required metrics"):
         payload_to_frame({"air_temperature_k": 298.1})
+
+
+def test_prepare_failure_type_targets_preserves_requested_order():
+    frame = sample_frame().assign(TWF=0, HDF=1, PWF=0, OSF=1)
+
+    targets = prepare_failure_type_targets(frame, ("TWF", "HDF", "PWF", "OSF"))
+
+    assert targets.columns.tolist() == ["TWF", "HDF", "PWF", "OSF"]
+    assert targets.iloc[0].tolist() == [0, 1, 0, 1]

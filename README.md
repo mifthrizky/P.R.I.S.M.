@@ -112,15 +112,22 @@ Jika sistemmu tidak memenuhi angka-angka ini, proyek ini belum selesai.
 
 The original notebook remains an exploratory record. Production-facing ML logic now lives in `src/prism/ml/` and is exposed through reproducible command-line tools.
 
-Current validated baseline:
+### Phase 2: Calibrated Predictive Engine — Complete
 
-- Model: Random Forest with 300 estimators and balanced class weights.
-- Holdout ROC-AUC: `0.9765`.
-- Five-fold cross-validation ROC-AUC: `0.9731 ± 0.0048`.
-- Operational threshold: `0.7`.
-- Failure recall at the current threshold: `0.6324`; threshold calibration is intentionally deferred to Phase 2.
-- Normal demo probability: `0.0`.
-- Anomaly demo probability: `0.7567`.
+The engine compares Random Forest and XGBoost with identical five-fold splits, selects the candidate with the strongest average precision, calibrates its probabilities, and learns a safety-oriented threshold on a separate validation set. A second multi-label model predicts TWF, HDF, PWF, and OSF.
+
+Current validated engine:
+
+- Selected binary model: calibrated Random Forest.
+- Holdout ROC-AUC: `0.9604`.
+- Holdout failure recall: `0.9118`.
+- Holdout failure precision: `0.3010`.
+- Learned operational threshold: `0.01326`.
+- Normal demo probability: `0.00379` (`HEALTHY`).
+- Anomaly demo probability: `0.73965` (`CRITICAL_WARNING`, primary failure `OSF`).
+- Failure-type metrics are recorded separately in `artifacts/model_metadata.json`.
+
+The low binary threshold is intentional: missing a real failure is treated as more costly than sending a machine to manual review. TWF remains the weakest subtype because AI4I contains very few positive TWF samples; its limitation is exposed in metadata rather than hidden behind aggregate accuracy.
 
 ### Project Structure
 
@@ -143,9 +150,9 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e . -r requirements-dev.txt
 ```
 
-### Train the Baseline
+### Train the Predictive Engine
 
-Training reads the raw AI4I CSV, uses a deterministic stratified split and five-fold cross-validation, then writes a versioned bundle and metadata to `artifacts/`.
+Training reads the raw AI4I CSV, creates deterministic train/validation/test splits, compares model candidates, calibrates the selected binary model, learns safety thresholds, trains the multi-label failure classifier, and writes a versioned bundle to `artifacts/`.
 
 ```powershell
 .\.venv\Scripts\python.exe -m prism.ml.train --config configs/training.json
@@ -153,8 +160,8 @@ Training reads the raw AI4I CSV, uses a deterministic stratified split and five-
 
 Generated files:
 
-- `artifacts/model_bundle.joblib`: preprocessing pipeline, classifier, and metadata.
-- `artifacts/model_metadata.json`: human-readable dataset hash, features, parameters, runtime versions, threshold, and metrics.
+- `artifacts/model_bundle.joblib`: calibrated binary pipeline, failure-type pipeline, and metadata.
+- `artifacts/model_metadata.json`: dataset hash, features, selected model, candidate comparison, thresholds, runtime versions, and per-label metrics.
 
 Only load the joblib artifact from this trusted repository. Joblib/pickle artifacts can execute code when loaded and must not be accepted from untrusted sources.
 
@@ -165,10 +172,10 @@ Only load the joblib artifact from this trusted repository. Joblib/pickle artifa
 .\.venv\Scripts\python.exe -m prism.ml.inference --demo
 ```
 
-To run the complete Phase 1 gate:
+To run the current predictive-engine gate:
 
 ```powershell
-.\scripts\validate_phase1.ps1
+.\scripts\validate_phase2.ps1
 ```
 
 The gate runs all automated tests, evaluates the saved bundle, and verifies that the two PRD payloads take the expected healthy and critical branches.

@@ -9,24 +9,19 @@ from typing import Any
 
 
 @dataclass(frozen=True)
-class ModelConfig:
-    type: str
-    n_estimators: int
-    class_weight: str
-    max_depth: int | None
-    n_jobs: int
-
-
-@dataclass(frozen=True)
 class TrainingConfig:
     data_path: Path
     artifact_dir: Path
     target_column: str
     test_size: float
+    validation_size: float
     random_seed: int
-    decision_threshold: float
+    minimum_failure_recall: float
+    minimum_failure_type_recall: float
     cross_validation_folds: int
-    model: ModelConfig
+    failure_type_columns: tuple[str, ...]
+    model_candidates: dict[str, dict[str, Any]]
+    failure_classifier: dict[str, Any]
 
 
 def load_training_config(path: str | Path) -> TrainingConfig:
@@ -36,25 +31,24 @@ def load_training_config(path: str | Path) -> TrainingConfig:
         raw: dict[str, Any] = json.load(config_file)
 
     test_size = float(raw["test_size"])
-    threshold = float(raw["decision_threshold"])
+    validation_size = float(raw["validation_size"])
+    minimum_recall = float(raw["minimum_failure_recall"])
+    minimum_type_recall = float(raw["minimum_failure_type_recall"])
     folds = int(raw["cross_validation_folds"])
     if not 0 < test_size < 1:
         raise ValueError("test_size must be between 0 and 1")
-    if not 0 <= threshold <= 1:
-        raise ValueError("decision_threshold must be between 0 and 1")
+    if not 0 < validation_size < 1 or test_size + validation_size >= 1:
+        raise ValueError("validation_size must leave room for training data")
+    if not 0 < minimum_recall <= 1:
+        raise ValueError("minimum_failure_recall must be between 0 and 1")
+    if not 0 < minimum_type_recall <= 1:
+        raise ValueError("minimum_failure_type_recall must be between 0 and 1")
     if folds < 2:
         raise ValueError("cross_validation_folds must be at least 2")
-
-    model_raw = raw["model"]
-    model = ModelConfig(
-        type=str(model_raw["type"]),
-        n_estimators=int(model_raw["n_estimators"]),
-        class_weight=str(model_raw["class_weight"]),
-        max_depth=model_raw["max_depth"],
-        n_jobs=int(model_raw["n_jobs"]),
-    )
-    if model.type != "random_forest":
-        raise ValueError(f"Unsupported baseline model type: {model.type}")
+    candidates = dict(raw["model_candidates"])
+    required_candidates = {"random_forest", "xgboost"}
+    if set(candidates) != required_candidates:
+        raise ValueError(f"model_candidates must contain exactly {sorted(required_candidates)}")
 
     base_dir = config_path.parent
     return TrainingConfig(
@@ -62,8 +56,12 @@ def load_training_config(path: str | Path) -> TrainingConfig:
         artifact_dir=(base_dir / raw["artifact_dir"]).resolve(),
         target_column=str(raw["target_column"]),
         test_size=test_size,
+        validation_size=validation_size,
         random_seed=int(raw["random_seed"]),
-        decision_threshold=threshold,
+        minimum_failure_recall=minimum_recall,
+        minimum_failure_type_recall=minimum_type_recall,
         cross_validation_folds=folds,
-        model=model,
+        failure_type_columns=tuple(raw["failure_type_columns"]),
+        model_candidates=candidates,
+        failure_classifier=dict(raw["failure_classifier"]),
     )

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal
 
 MachineType = Literal["L", "M", "H"]
@@ -32,3 +32,5 @@ class PredictionResult:
     threshold: float
     machine_type: MachineType
     machine_type_assumed: bool
+    primary_failure: str | None = None
+    failure_predictions: list[dict[str, float | str]] = field(default_factory=list)

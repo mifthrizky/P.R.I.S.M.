@@ -73,6 +73,16 @@ def prepare_training_data(
     return transformed[FEATURE_COLUMNS], transformed[target_column].astype(int)
 
 
+def prepare_failure_type_targets(
+    frame: pd.DataFrame, failure_type_columns: tuple[str, ...]
+) -> pd.DataFrame:
+    """Return the multi-label failure target matrix in a stable order."""
+    missing = sorted(set(failure_type_columns).difference(frame.columns))
+    if missing:
+        raise ValueError(f"Dataset is missing failure type columns: {missing}")
+    return frame[list(failure_type_columns)].astype(int)
+
+
 def payload_to_frame(
     metrics: Mapping[str, Any], machine_type: str = "M"
 ) -> pd.DataFrame:
