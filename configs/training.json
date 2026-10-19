@@ -1,0 +1,16 @@
+{
+  "data_path": "../ai4i2020.csv",
+  "artifact_dir": "../artifacts",
+  "target_column": "Machine failure",
+  "test_size": 0.2,
+  "random_seed": 42,
+  "decision_threshold": 0.7,
+  "cross_validation_folds": 5,
+  "model": {
+    "type": "random_forest",
+    "n_estimators": 300,
+    "class_weight": "balanced",
+    "max_depth": null,
+    "n_jobs": -1
+  }
+}

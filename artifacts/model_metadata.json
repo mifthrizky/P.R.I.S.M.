@@ -1,0 +1,103 @@
+{
+  "dataset": {
+    "filename": "ai4i2020.csv",
+    "positive_rows": 339,
+    "rows": 10000,
+    "sha256": "f602454c133d7b85f0b90f7ff4c8d2b9e450cd5583536ee4da93d7eda43f3292"
+  },
+  "decision_threshold": 0.7,
+  "feature_columns": [
+    "Type",
+    "Air temperature [K]",
+    "Process temperature [K]",
+    "Rotational speed [rpm]",
+    "Torque [Nm]",
+    "Tool wear [min]",
+    "temp_diff",
+    "power"
+  ],
+  "metrics": {
+    "cross_validation": {
+      "folds": 5,
+      "roc_auc_mean": 0.9731416815564582,
+      "roc_auc_scores": [
+        0.9755001505663611,
+        0.9762475642430886,
+        0.9790867433930095,
+        0.9681220314212642,
+        0.9667519181585678
+      ],
+      "roc_auc_std": 0.0048286355699094724
+    },
+    "holdout": {
+      "classification_report": {
+        "0": {
+          "f1-score": 0.9927946474523932,
+          "precision": 0.9872057318321392,
+          "recall": 0.9984472049689441,
+          "support": 1932.0
+        },
+        "1": {
+          "f1-score": 0.7543859649122807,
+          "precision": 0.9347826086956522,
+          "recall": 0.6323529411764706,
+          "support": 68.0
+        },
+        "accuracy": 0.986,
+        "macro avg": {
+          "f1-score": 0.8735903061823369,
+          "precision": 0.9609941702638958,
+          "recall": 0.8154000730727073,
+          "support": 2000.0
+        },
+        "weighted avg": {
+          "f1-score": 0.9846887522460294,
+          "precision": 0.9854233456454987,
+          "recall": 0.986,
+          "support": 2000.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          1929,
+          3
+        ],
+        [
+          25,
+          43
+        ]
+      ],
+      "probability_summary": {
+        "maximum": 0.9933333333333333,
+        "mean": 0.044921666666666665,
+        "minimum": 0.0
+      },
+      "roc_auc": 0.9765139751552796,
+      "threshold": 0.7
+    }
+  },
+  "model_parameters": {
+    "class_weight": "balanced",
+    "max_depth": null,
+    "n_estimators": 300,
+    "n_jobs": -1
+  },
+  "model_type": "RandomForestClassifier",
+  "model_version": "1.0.0",
+  "project_version": "0.1.0",
+  "random_seed": 42,
+  "runtime_versions": {
+    "joblib": "1.6.0",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "python": "3.14.3",
+    "scikit-learn": "1.9.0"
+  },
+  "split": {
+    "test_rows": 2000,
+    "test_size": 0.2,
+    "train_rows": 8000
+  },
+  "target_column": "Machine failure",
+  "trained_at_utc": "2026-10-19T14:26:00.863348+00:00"
+}

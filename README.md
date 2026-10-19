@@ -105,3 +105,70 @@ Jika sistemmu tidak memenuhi angka-angka ini, proyek ini belum selesai.
 1.  **Akurasi ML:** Model klasifikasi wajib mencapai **ROC-AUC minimal 0.88** pada dataset evaluasi.
 2.  **Validasi Output:** LLM harus menghasilkan keluaran JSON terstruktur (di-validasi oleh Pydantic) dengan _success rate_ 100% tanpa ada teks naratif acak yang merusak format.
 3.  **Latensi:** Waktu dari masuknya JSON anomali hingga keluarnya JSON _mitigation plan_ dari LLM tidak boleh lebih dari 3 detik pada pengujian lokal.
+
+## Development Status
+
+### Phase 1: Reproducible ML Foundation — Complete
+
+The original notebook remains an exploratory record. Production-facing ML logic now lives in `src/prism/ml/` and is exposed through reproducible command-line tools.
+
+Current validated baseline:
+
+- Model: Random Forest with 300 estimators and balanced class weights.
+- Holdout ROC-AUC: `0.9765`.
+- Five-fold cross-validation ROC-AUC: `0.9731 ± 0.0048`.
+- Operational threshold: `0.7`.
+- Failure recall at the current threshold: `0.6324`; threshold calibration is intentionally deferred to Phase 2.
+- Normal demo probability: `0.0`.
+- Anomaly demo probability: `0.7567`.
+
+### Project Structure
+
+```text
+configs/                  Reproducible training configuration
+artifacts/                Versioned model bundle and readable metadata
+scripts/                  Phase validation commands
+src/prism/                Reusable package source
+  ml/                     Features, training, evaluation, inference, persistence
+tests/                    Unit and integration tests
+01_model-training.ipynb   Exploratory notebook
+```
+
+### Local Setup
+
+Python 3.12 or newer is required.
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e . -r requirements-dev.txt
+```
+
+### Train the Baseline
+
+Training reads the raw AI4I CSV, uses a deterministic stratified split and five-fold cross-validation, then writes a versioned bundle and metadata to `artifacts/`.
+
+```powershell
+.\.venv\Scripts\python.exe -m prism.ml.train --config configs/training.json
+```
+
+Generated files:
+
+- `artifacts/model_bundle.joblib`: preprocessing pipeline, classifier, and metadata.
+- `artifacts/model_metadata.json`: human-readable dataset hash, features, parameters, runtime versions, threshold, and metrics.
+
+Only load the joblib artifact from this trusted repository. Joblib/pickle artifacts can execute code when loaded and must not be accepted from untrusted sources.
+
+### Evaluate and Run Demo Inference
+
+```powershell
+.\.venv\Scripts\python.exe -m prism.ml.evaluate --config configs/training.json
+.\.venv\Scripts\python.exe -m prism.ml.inference --demo
+```
+
+To run the complete Phase 1 gate:
+
+```powershell
+.\scripts\validate_phase1.ps1
+```
+
+The gate runs all automated tests, evaluates the saved bundle, and verifies that the two PRD payloads take the expected healthy and critical branches.
