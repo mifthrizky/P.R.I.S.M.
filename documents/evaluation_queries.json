@@ -1,0 +1,36 @@
+{
+  "queries": [
+    {
+      "query": "What steps are required to isolate hazardous energy before machine maintenance?",
+      "expected_document_ids": ["OSHA-3120", "OSHA-3964"]
+    },
+    {
+      "query": "How often should energy control procedures be inspected?",
+      "expected_document_ids": ["OSHA-3120", "OSHA-3964"]
+    },
+    {
+      "query": "How should stored hydraulic or pneumatic energy be controlled during lockout?",
+      "expected_document_ids": ["OSHA-3120"]
+    },
+    {
+      "query": "What safeguards are recommended for milling machines?",
+      "expected_document_ids": ["OSHA-3170"]
+    },
+    {
+      "query": "What is point-of-operation guarding and why is it required?",
+      "expected_document_ids": ["OSHA-3170", "OSHA-2201"]
+    },
+    {
+      "query": "What training must authorized lockout tagout employees receive?",
+      "expected_document_ids": ["OSHA-3120", "OSHA-3964"]
+    },
+    {
+      "query": "How can rotating machine parts cause amputation hazards?",
+      "expected_document_ids": ["OSHA-3170"]
+    },
+    {
+      "query": "What responsibilities do employers have for workplace machine safety?",
+      "expected_document_ids": ["OSHA-2201", "OSHA-3170"]
+    }
+  ]
+}

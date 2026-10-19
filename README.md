@@ -129,6 +129,17 @@ Current validated engine:
 
 The low binary threshold is intentional: missing a real failure is treated as more costly than sending a machine to manual review. TWF remains the weakest subtype because AI4I contains very few positive TWF samples; its limitation is exposed in metadata rather than hidden behind aggregate accuracy.
 
+### Phase 3: Offline Hybrid Knowledge Retrieval — Complete
+
+The knowledge base contains four checksum-verified public-domain OSHA publications covering lockout/tagout, hazardous energy, machine guarding, milling machines, PPE, and general industry safety. PDF chunks retain document ID, title, revision, source URL, category, and page number.
+
+- Dense retrieval: normalized `intfloat/multilingual-e5-small` embeddings with FAISS `IndexFlatIP`.
+- Sparse retrieval: BM25 keyword scoring.
+- Fusion: Reciprocal Rank Fusion over the top ten dense and sparse candidates.
+- Corpus: 334 page-preserving chunks across four documents.
+- Evaluation: document-level Recall@5 of `1.0` over eight safety queries.
+- Weak retrieval is converted to `INSUFFICIENT_EVIDENCE` instead of being passed downstream as authoritative context.
+
 ### Project Structure
 
 ```text
@@ -138,6 +149,7 @@ scripts/                  Phase validation commands
 src/prism/                Reusable package source
   ml/                     Features, training, evaluation, inference, persistence
 tests/                    Unit and integration tests
+documents/                Verified source PDFs, manifest, and RAG evaluation queries
 01_model-training.ipynb   Exploratory notebook
 ```
 
@@ -179,3 +191,17 @@ To run the current predictive-engine gate:
 ```
 
 The gate runs all automated tests, evaluates the saved bundle, and verifies that the two PRD payloads take the expected healthy and critical branches.
+
+### Build and Evaluate the Knowledge Index
+
+The embedding model is downloaded once into the local Hugging Face cache and is not committed to Git.
+
+```powershell
+$env:HF_HOME = "$PWD\.cache\huggingface"
+.\.venv\Scripts\python.exe -m prism.rag.index
+.\.venv\Scripts\python.exe -m prism.rag.evaluate
+.\.venv\Scripts\python.exe -m prism.rag.retriever "lockout procedure before maintenance"
+.\scripts\validate_phase3.ps1
+```
+
+The generated FAISS index, chunk store, build metadata, and evaluation report are stored in `artifacts/knowledge/`.

@@ -1,0 +1,97 @@
+{
+  "top_k": 5,
+  "recall_at_k": 1.0,
+  "queries": [
+    {
+      "query": "What steps are required to isolate hazardous energy before machine maintenance?",
+      "hit": true,
+      "expected_document_ids": [
+        "OSHA-3120",
+        "OSHA-3964"
+      ],
+      "retrieved_document_ids": [
+        "OSHA-3120"
+      ]
+    },
+    {
+      "query": "How often should energy control procedures be inspected?",
+      "hit": true,
+      "expected_document_ids": [
+        "OSHA-3120",
+        "OSHA-3964"
+      ],
+      "retrieved_document_ids": [
+        "OSHA-3120"
+      ]
+    },
+    {
+      "query": "How should stored hydraulic or pneumatic energy be controlled during lockout?",
+      "hit": true,
+      "expected_document_ids": [
+        "OSHA-3120"
+      ],
+      "retrieved_document_ids": [
+        "OSHA-3120",
+        "OSHA-3964"
+      ]
+    },
+    {
+      "query": "What safeguards are recommended for milling machines?",
+      "hit": true,
+      "expected_document_ids": [
+        "OSHA-3170"
+      ],
+      "retrieved_document_ids": [
+        "OSHA-3120",
+        "OSHA-3170"
+      ]
+    },
+    {
+      "query": "What is point-of-operation guarding and why is it required?",
+      "hit": true,
+      "expected_document_ids": [
+        "OSHA-2201",
+        "OSHA-3170"
+      ],
+      "retrieved_document_ids": [
+        "OSHA-2201",
+        "OSHA-3170"
+      ]
+    },
+    {
+      "query": "What training must authorized lockout tagout employees receive?",
+      "hit": true,
+      "expected_document_ids": [
+        "OSHA-3120",
+        "OSHA-3964"
+      ],
+      "retrieved_document_ids": [
+        "OSHA-3120",
+        "OSHA-3964"
+      ]
+    },
+    {
+      "query": "How can rotating machine parts cause amputation hazards?",
+      "hit": true,
+      "expected_document_ids": [
+        "OSHA-3170"
+      ],
+      "retrieved_document_ids": [
+        "OSHA-2201",
+        "OSHA-3170"
+      ]
+    },
+    {
+      "query": "What responsibilities do employers have for workplace machine safety?",
+      "hit": true,
+      "expected_document_ids": [
+        "OSHA-2201",
+        "OSHA-3170"
+      ],
+      "retrieved_document_ids": [
+        "OSHA-3120",
+        "OSHA-3170"
+      ]
+    }
+  ]
+}

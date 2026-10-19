@@ -1,0 +1,48 @@
+{
+  "documents": [
+    {
+      "document_id": "OSHA-2201",
+      "title": "OSHA General Industry Digest",
+      "filename": "osha-2201-general-industry-digest.pdf",
+      "publisher": "Occupational Safety and Health Administration",
+      "revision": "2026",
+      "source_url": "https://www.osha.gov/sites/default/files/publications/osha_2201.pdf",
+      "license": "U.S. government work; public domain unless otherwise noted in the document",
+      "sha256": "6a6576902187125fbaa6c8856870888100966ec9d2e53b86887f5ebc0642ca4b",
+      "categories": ["general-industry", "ppe", "machine-safety"]
+    },
+    {
+      "document_id": "OSHA-3120",
+      "title": "Control of Hazardous Energy: Lockout/Tagout",
+      "filename": "osha-3120-lockout-tagout.pdf",
+      "publisher": "Occupational Safety and Health Administration",
+      "revision": "2002 revised",
+      "source_url": "https://www.osha.gov/sites/default/files/publications/OSHA3120.pdf",
+      "license": "U.S. government work; public domain unless otherwise noted in the document",
+      "sha256": "3ea7380fa10860417ed30720eaf8beb7a85d106e3dafb97b880001df6552767b",
+      "categories": ["lockout-tagout", "hazardous-energy", "maintenance"]
+    },
+    {
+      "document_id": "OSHA-3170",
+      "title": "Safeguarding Equipment and Protecting Employees from Amputations",
+      "filename": "osha-3170-machine-guarding.pdf",
+      "publisher": "Occupational Safety and Health Administration",
+      "revision": "2007",
+      "source_url": "https://www.osha.gov/sites/default/files/publications/osha3170.pdf",
+      "license": "Public domain; source credit requested",
+      "sha256": "fab230fb8ab519771715af0cac111dc8f446c350b80800da20483823d431dcb7",
+      "categories": ["machine-guarding", "milling-machine", "amputation"]
+    },
+    {
+      "document_id": "OSHA-3964",
+      "title": "Temporary Worker Initiative: Control of Hazardous Energy",
+      "filename": "osha-3964-temporary-workers-loto.pdf",
+      "publisher": "Occupational Safety and Health Administration",
+      "revision": "2018",
+      "source_url": "https://www.osha.gov/sites/default/files/publications/OSHA3964.pdf",
+      "license": "U.S. government work; public domain unless otherwise noted in the document",
+      "sha256": "8586c15917032887f0ea4ab8cdf7cea3690b2470d200e69f8cad4b9836f17a39",
+      "categories": ["lockout-tagout", "training", "temporary-workers"]
+    }
+  ]
+}

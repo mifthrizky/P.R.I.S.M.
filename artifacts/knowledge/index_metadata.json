@@ -1,0 +1,10 @@
+{
+  "backend": "IndexFlatIP",
+  "built_at_utc": "2026-10-19T15:01:47.306131+00:00",
+  "chunk_count": 334,
+  "chunks_sha256": "1357e09284f078738b331e4c3f48d07dde4b7d84833bb18e6fb821c0037e57e7",
+  "document_count": 4,
+  "embedding_dimension": 384,
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "manifest_sha256": "958e757c654a3ecd7c25fb78f321a62899b9dc68bf612b20d3811d59942de0b9"
+}
