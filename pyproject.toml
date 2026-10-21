@@ -18,6 +18,8 @@ dependencies = [
     "pymupdf==2.0",
     "rank-bm25==0.2.2",
     "sentence-transformers==6.1.0",
+    "httpx==0.28.1",
+    "pydantic==2.12.3",
 ]
 
 [project.scripts]
@@ -27,6 +29,7 @@ prism-infer = "prism.ml.inference:main"
 prism-index = "prism.rag.index:main"
 prism-retrieve = "prism.rag.retriever:main"
 prism-evaluate-rag = "prism.rag.evaluate:main"
+prism-mitigate = "prism.llm.client:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

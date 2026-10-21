@@ -140,6 +140,14 @@ The knowledge base contains four checksum-verified public-domain OSHA publicatio
 - Evaluation: document-level Recall@5 of `1.0` over eight safety queries.
 - Weak retrieval is converted to `INSUFFICIENT_EVIDENCE` instead of being passed downstream as authoritative context.
 
+### Phase 4: Validated Local Mitigation Generation — Complete
+
+Qwen2.5 runs locally through Ollama and receives only the predicted failure, confidence,
+and retrieved evidence. Its response is constrained by a strict Pydantic JSON schema.
+Every citation must exactly match a document, title, and page supplied in the prompt.
+Malformed output, invented citations, timeouts, HTTP errors, and weak retrieval all
+produce `MANUAL_REVIEW_REQUIRED`; raw model output is never forwarded to operators.
+
 ### Project Structure
 
 ```text
@@ -148,6 +156,7 @@ artifacts/                Versioned model bundle and readable metadata
 scripts/                  Phase validation commands
 src/prism/                Reusable package source
   ml/                     Features, training, evaluation, inference, persistence
+  llm/                    Structured Ollama client and strict mitigation schemas
 tests/                    Unit and integration tests
 documents/                Verified source PDFs, manifest, and RAG evaluation queries
 01_model-training.ipynb   Exploratory notebook
@@ -205,3 +214,15 @@ $env:HF_HOME = "$PWD\.cache\huggingface"
 ```
 
 The generated FAISS index, chunk store, build metadata, and evaluation report are stored in `artifacts/knowledge/`.
+
+### Run the Local Mitigation Model
+
+Start Ollama locally, pull the default model, and run the phase gate:
+
+```powershell
+docker run -d --gpus all -v prism_ollama:/root/.ollama -p 11434:11434 --name prism-ollama ollama/ollama
+docker exec prism-ollama ollama pull qwen2.5:3b
+.\scripts\validate_phase4.ps1
+```
+
+The model weights live in the Docker volume and are intentionally excluded from Git.
