@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-10-21T09:59:00.326349+00:00",
+  "mode": "deterministic_orchestration",
+  "limitations": "Generation uses a schema-valid deterministic stand-in. This report does not claim live Ollama/Qwen latency; run a live benchmark after Ollama is available.",
+  "runs_per_branch": 100,
+  "ml_test_roc_auc": 0.9603694738765072,
+  "rag_recall_at_5": 1.0,
+  "structured_output_success_rate": 1.0,
+  "normal_latency": {
+    "p50_ms": 137.76,
+    "p95_ms": 286.236,
+    "p99_ms": 299.542
+  },
+  "anomaly_latency": {
+    "p50_ms": 362.398,
+    "p95_ms": 715.238,
+    "p99_ms": 758.084
+  },
+  "gates": {
+    "roc_auc_at_least_0_88": true,
+    "rag_recall_at_5_is_1": true,
+    "structured_output_rate_is_1": true,
+    "deterministic_orchestration_p95_under_3s": true
+  },
+  "passed": true
+}

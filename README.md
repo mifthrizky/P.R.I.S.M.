@@ -156,6 +156,15 @@ predictions return immediately without invoking retrieval or generation. Critica
 predictions run hybrid retrieval and validated local generation; any downstream safety
 failure is represented explicitly as `MANUAL_REVIEW_REQUIRED`.
 
+### Phase 6: Acceptance and Benchmarking — Complete
+
+The acceptance suite exercises 100 schema-and-grounding-valid generation responses,
+timeout and HTTP fault injection, both PRD sensor branches, ML quality, retrieval recall,
+and orchestration latency. `artifacts/acceptance_report.json` records p50/p95/p99 and the
+gate results. Its default benchmark uses a deterministic schema-valid generator, so it
+measures application orchestration—not live Qwen inference. Live Ollama latency remains
+a separate hardware-dependent verification and is never represented by the stub result.
+
 ### Project Structure
 
 ```text
@@ -246,3 +255,13 @@ Invoke-RestMethod http://127.0.0.1:8000/health
 
 `/health` confirms process liveness. `/ready` returns HTTP 503 until the model bundle,
 knowledge index, and embedding model have loaded successfully.
+
+### Run Acceptance and Benchmark Gates
+
+```powershell
+.\scripts\validate_phase6.ps1
+```
+
+The command fails if ROC-AUC drops below `0.88`, Recall@5 drops below `1.0`, any of 100
+structured outputs fails validation, or deterministic anomaly orchestration p95 exceeds
+three seconds.

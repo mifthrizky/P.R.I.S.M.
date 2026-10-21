@@ -33,6 +33,7 @@ prism-retrieve = "prism.rag.retriever:main"
 prism-evaluate-rag = "prism.rag.evaluate:main"
 prism-mitigate = "prism.llm.client:main"
 prism-api = "prism.api.app:run"
+prism-benchmark = "prism.benchmark:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
