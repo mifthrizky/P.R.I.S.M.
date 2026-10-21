@@ -148,6 +148,14 @@ Every citation must exactly match a document, title, and page supplied in the pr
 Malformed output, invented citations, timeouts, HTTP errors, and weak retrieval all
 produce `MANUAL_REVIEW_REQUIRED`; raw model output is never forwarded to operators.
 
+### Phase 5: Predictive Maintenance API — Complete
+
+FastAPI exposes `POST /v1/predict`, `GET /health`, and `GET /ready`. Requests are
+validated before inference and receive a correlation ID plus per-stage timings. Healthy
+predictions return immediately without invoking retrieval or generation. Critical
+predictions run hybrid retrieval and validated local generation; any downstream safety
+failure is represented explicitly as `MANUAL_REVIEW_REQUIRED`.
+
 ### Project Structure
 
 ```text
@@ -157,6 +165,7 @@ scripts/                  Phase validation commands
 src/prism/                Reusable package source
   ml/                     Features, training, evaluation, inference, persistence
   llm/                    Structured Ollama client and strict mitigation schemas
+  api/                    FastAPI contracts and orchestration runtime
 tests/                    Unit and integration tests
 documents/                Verified source PDFs, manifest, and RAG evaluation queries
 01_model-training.ipynb   Exploratory notebook
@@ -226,3 +235,14 @@ docker exec prism-ollama ollama pull qwen2.5:3b
 ```
 
 The model weights live in the Docker volume and are intentionally excluded from Git.
+
+### Run the API
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn prism.api.app:app --host 127.0.0.1 --port 8000
+Invoke-RestMethod http://127.0.0.1:8000/health
+.\scripts\validate_phase5.ps1
+```
+
+`/health` confirms process liveness. `/ready` returns HTTP 503 until the model bundle,
+knowledge index, and embedding model have loaded successfully.

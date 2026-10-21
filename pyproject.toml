@@ -20,6 +20,8 @@ dependencies = [
     "sentence-transformers==6.1.0",
     "httpx==0.28.1",
     "pydantic==2.12.3",
+    "fastapi==0.119.1",
+    "uvicorn==0.38.0",
 ]
 
 [project.scripts]
@@ -30,6 +32,7 @@ prism-index = "prism.rag.index:main"
 prism-retrieve = "prism.rag.retriever:main"
 prism-evaluate-rag = "prism.rag.evaluate:main"
 prism-mitigate = "prism.llm.client:main"
+prism-api = "prism.api.app:run"
 
 [tool.setuptools.packages.find]
 where = ["src"]
