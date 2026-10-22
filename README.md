@@ -165,6 +165,14 @@ gate results. Its default benchmark uses a deterministic schema-valid generator,
 measures application orchestration—not live Qwen inference. Live Ollama latency remains
 a separate hardware-dependent verification and is never represented by the stub result.
 
+### Phase 7: Operational Packaging — Complete
+
+The API is packaged as a non-root Python 3.12 container and composed with a GPU-enabled
+Ollama service. Named volumes preserve Qwen and E5 model caches for offline restarts.
+Environment variables configure artifact paths and model endpoints, while liveness and
+readiness remain separate. GitHub Actions runs lint, tests, and a short acceptance gate.
+See `docs/operations.md` for setup, safety, verification, and rollback guidance.
+
 ### Project Structure
 
 ```text
@@ -187,6 +195,8 @@ Python 3.12 or newer is required.
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e . -r requirements-dev.txt
+# Or run the idempotent setup helper:
+.\scripts\setup.ps1
 ```
 
 ### Train the Predictive Engine
@@ -265,3 +275,17 @@ knowledge index, and embedding model have loaded successfully.
 The command fails if ROC-AUC drops below `0.88`, Recall@5 drops below `1.0`, any of 100
 structured outputs fails validation, or deterministic anomaly orchestration p95 exceeds
 three seconds.
+
+### Run the Container Stack
+
+The Compose profile requires Docker Desktop with NVIDIA GPU container support. Its first
+run needs network access to populate the persistent model volumes.
+
+```powershell
+docker compose config --quiet
+docker compose up --build -d
+Invoke-RestMethod http://127.0.0.1:8000/ready
+```
+
+Configuration defaults are documented in `.env.example`. Keep local `.env` files out of
+Git. Run `scripts/validate_phase7.ps1` after any packaging or deployment change.

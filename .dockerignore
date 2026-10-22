@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+.cache
+__pycache__
+.pytest_cache
+.ruff_cache
+*.pyc
+*.ipynb
+ai4i2020.csv
+ai4i2020.xlsx
+ai4i2020_clean.csv
+tests
+web

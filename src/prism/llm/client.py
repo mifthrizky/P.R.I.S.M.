@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from collections.abc import Callable
 from typing import Any
 
@@ -12,8 +13,8 @@ from pydantic import ValidationError
 
 from prism.llm.schemas import MitigationResponse
 
-DEFAULT_MODEL = "qwen2.5:3b"
-DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434"
+DEFAULT_MODEL = os.getenv("PRISM_LLM_MODEL", "qwen2.5:3b")
+DEFAULT_OLLAMA_URL = os.getenv("PRISM_OLLAMA_URL", "http://127.0.0.1:11434")
 
 FAILURE_QUERIES = {
     "TWF": "tool wear maintenance machine shutdown lockout tagout PPE",

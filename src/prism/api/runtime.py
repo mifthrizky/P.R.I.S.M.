@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from time import perf_counter
 from typing import Any, Protocol
@@ -79,10 +80,13 @@ def _elapsed_ms(started: float) -> float:
 
 
 def load_default_runtime(
-    model_path: str | Path = "artifacts/model_bundle.joblib",
-    knowledge_path: str | Path = "artifacts/knowledge",
+    model_path: str | Path | None = None,
+    knowledge_path: str | Path | None = None,
 ) -> PrismRuntime:
+    model_path = model_path or os.getenv("PRISM_MODEL_PATH", "artifacts/model_bundle.joblib")
+    knowledge_path = knowledge_path or os.getenv("PRISM_KNOWLEDGE_PATH", "artifacts/knowledge")
     bundle = load_bundle(model_path)
-    embedder = E5Embedder(DEFAULT_EMBEDDING_MODEL)
+    embedding_model = os.getenv("PRISM_EMBEDDING_MODEL", DEFAULT_EMBEDDING_MODEL)
+    embedder = E5Embedder(embedding_model)
     retriever = HybridRetriever(knowledge_path, embedder)
     return PrismRuntime(bundle, retriever, MitigationGenerator())

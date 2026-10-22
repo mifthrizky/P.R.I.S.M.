@@ -6,14 +6,16 @@ import argparse
 import json
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
 from prism.ml.artifacts import sha256_file
-from prism.rag.ingest import DocumentChunk, ingest_documents
+
+if TYPE_CHECKING:
+    from prism.rag.ingest import DocumentChunk
 
 DEFAULT_EMBEDDING_MODEL = "intfloat/multilingual-e5-small"
 
@@ -60,6 +62,8 @@ def build_index(
     output_dir: str | Path,
     embedder: Embedder,
 ) -> dict[str, object]:
+    from prism.rag.ingest import ingest_documents
+
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
     chunks = ingest_documents(manifest_path, source_dir)

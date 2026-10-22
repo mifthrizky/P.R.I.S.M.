@@ -1,0 +1,59 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    gpus: all
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  ollama-model:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: ${PRISM_LLM_MODEL:-qwen2.5:3b}
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["ollama pull $$OLLAMA_MODEL"]
+    restart: "no"
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      ollama-model:
+        condition: service_completed_successfully
+    environment:
+      PRISM_LLM_MODEL: ${PRISM_LLM_MODEL:-qwen2.5:3b}
+      PRISM_OLLAMA_URL: http://ollama:11434
+      PRISM_MODEL_PATH: /app/artifacts/model_bundle.joblib
+      PRISM_KNOWLEDGE_PATH: /app/artifacts/knowledge
+      HF_HOME: /models/huggingface
+    ports:
+      - "8000:8000"
+    volumes:
+      - huggingface_models:/models/huggingface
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+volumes:
+  ollama_models:
+  huggingface_models:
