@@ -3,7 +3,7 @@
     "filename": "ai4i2020.csv",
     "positive_rows": 339,
     "rows": 10000,
-    "sha256": "f602454c133d7b85f0b90f7ff4c8d2b9e450cd5583536ee4da93d7eda43f3292"
+    "sha256": "9841aaa04b716d41ce9501f42d9388de7f571566608945061d026f95853c0337"
   },
   "decision_threshold": 0.01326099497403016,
   "failure_classifier_parameters": {
