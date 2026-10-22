@@ -35,6 +35,10 @@ Invoke-RestMethod http://127.0.0.1:8000/ready
 The first start pulls Qwen into `ollama_models` and downloads the embedding model into
 `huggingface_models`. Preserve these named volumes for offline restarts.
 
+The dashboard is available at `http://127.0.0.1:3000`. It proxies prediction and health
+requests to `http://api:8000` inside the Compose network. Override `PRISM_API_URL` only
+when deploying the web container separately.
+
 ## Operational safety
 
 - Treat `MANUAL_REVIEW_REQUIRED` as a hard stop for automated action.
@@ -47,5 +51,6 @@ The first start pulls Qwen into `ollama_models` and downloads the embedding mode
 ## Verification and rollback
 
 Run `scripts/validate_phase6.ps1` before a release and `scripts/validate_phase7.ps1`
-after packaging changes. Releases are marked by Git tags. Roll back by deploying a prior
-tag together with its matching model and knowledge artifacts; never mix artifact versions.
+after packaging changes. Run `scripts/validate_phase8.ps1` for the dashboard. Releases
+are marked by Git tags. Roll back by deploying a prior tag together with its matching
+model and knowledge artifacts; never mix artifact versions.

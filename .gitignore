@@ -17,6 +17,9 @@ htmlcov/
 build/
 dist/
 *.egg-info/
+node_modules/
+.next/
+npm-debug.log*
 
 # Local configuration and secrets
 .env

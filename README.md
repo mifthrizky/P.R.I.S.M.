@@ -173,6 +173,14 @@ Environment variables configure artifact paths and model endpoints, while livene
 readiness remain separate. GitHub Actions runs lint, tests, and a short acceptance gate.
 See `docs/operations.md` for setup, safety, verification, and rollback guidance.
 
+### Phase 8: Operational Monitoring Dashboard — Complete
+
+The responsive Next.js dashboard provides API readiness, editable sensor inputs, the two
+PRD presets, failure probability and classification, per-stage latency, and grounded
+mitigation with page-level citations. Browser requests use server-side Next.js proxy
+routes, so the FastAPI service remains private inside Compose. The production image runs
+as an unprivileged user and the UI explicitly preserves the human-authorization warning.
+
 ### Project Structure
 
 ```text
@@ -287,5 +295,9 @@ docker compose up --build -d
 Invoke-RestMethod http://127.0.0.1:8000/ready
 ```
 
+Open `http://127.0.0.1:3000` for the operations dashboard. Its server-side proxy connects
+to the API through the private Compose network.
+
 Configuration defaults are documented in `.env.example`. Keep local `.env` files out of
 Git. Run `scripts/validate_phase7.ps1` after any packaging or deployment change.
+Run `scripts/validate_phase8.ps1` after dashboard changes.
