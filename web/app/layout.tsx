@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Manrope } from "next/font/google";
 
 import "./globals.css";
+import "./industrial-dashboard.css";
 
 const sans = Manrope({ subsets: ["latin"], variable: "--font-sans" });
 const mono = IBM_Plex_Mono({
@@ -12,7 +13,12 @@ const mono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "PRISM Operations",
-  description: "Predictive maintenance and industrial safety decision support",
+  description: "Industrial HMI for predictive maintenance and safety decision support",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
